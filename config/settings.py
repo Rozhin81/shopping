@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     "corsheaders",
     'users',
+    'drf_yasg',
+    'django_pdb',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +136,13 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
     'django.contrib.auth.hashers.Argon2PasswordHasher',
 ]
+
+# REST_FRAMEWORK = {
+#     'EXCEPTION_HANDLER': 'utils.exceptionhandler.custom_exception_handler' ,
+#    'DEFAULT_AUTHENTICATION_CLASSES': [
+#        'rest_framework_simplejwt.authentication.JWTAuthentication',
+#    ],
+#    'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAdminUser'
+#    ],
+# }

@@ -11,11 +11,12 @@ from .utils import Utils
 
 class UserSerializer(serializers.ModelSerializer) :
     class Meta:
-        model=User
-        fields = ("name" , "email" , "phone", "password")
-        extra_kwargs = {
-            "password" : {"write_only" : True}  #don't show password when print user
+        model = User
+        fields = ["name" , "email" , "phone", "password"]
+        extra_kwargs={
+            "password":{"write_only" : True}
         }
+
     def create(self , validate_data) :
         # print(validate_data)
         password = validate_data.pop("password" , None)
@@ -24,33 +25,34 @@ class UserSerializer(serializers.ModelSerializer) :
             instance.set_password(password)
         instance.save()
         return instance
+
     
 
 # class ResetPasswordSerializer(serializers.Serializer) :
-    email = serializers.EmailField(min_length=2)
-    class Meta : 
-        fields = ["email"]
-    def validate(self, attrs):
-        try:
-            email = attrs.get("email", '')
-            if User.objects.filter(email=email).exists() :
-                user = User.objects.get(email=email)
-                payload = {
-                    "id" : user.id ,
-                    "email" :user.email ,
-                    "exp" : datetime.datetime.utcnow() + datetime.timedelta(minutes=120),
-                    "iat" : datetime.datetime.utcnow()
-                }
-                token = jwt.encode(payload , "secret")       
-                currrent_site = get_current_site(request=attrs["data"].get("request")).domain()
-                relative_link = reverse('password-reset' , kwargs={'uidb64' : "uidb64" , 'token' : token})
-                absurl = 'http://'+currrent_site+relative_link
-                email_body = "Hi " + user.name + "use link below to reset your password "
-                data = {"email_body" : email_body , "to_email" : user.email , "email_subject" : "Reset password"}
-                Utils.send_email(data)
-        except : 
-            pass
-        return super().validate(attrs)
+    # email = serializers.EmailField(min_length=2)
+    # class Meta : 
+    #     fields = ["email"]
+    # def validate(self, attrs):
+    #     try:
+    #         email = attrs.get("email", '')
+    #         if User.objects.filter(email=email).exists() :
+    #             user = User.objects.get(email=email)
+    #             payload = {
+    #                 "id" : user.id ,
+    #                 "email" :user.email ,
+    #                 "exp" : datetime.datetime.utcnow() + datetime.timedelta(minutes=120),
+    #                 "iat" : datetime.datetime.utcnow()
+    #             }
+    #             token = jwt.encode(payload , "secret")       
+    #             currrent_site = get_current_site(request=attrs["data"].get("request")).domain()
+    #             relative_link = reverse('password-reset' , kwargs={'uidb64' : "uidb64" , 'token' : token})
+    #             absurl = 'http://'+currrent_site+relative_link
+    #             email_body = "Hi " + user.name + "use link below to reset your password "
+    #             data = {"email_body" : email_body , "to_email" : user.email , "email_subject" : "Reset password"}
+    #             Utils.send_email(data)
+    #     except : 
+    #         pass
+    #     return super().validate(attrs)
 
 
 class ResetPasswordSerializer(serializers.Serializer):
