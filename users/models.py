@@ -11,11 +11,8 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
     password = models.CharField(max_length=128)
-    created = models.DateTimeField(auto_now_add=True)
-    email_verified=models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
-    is_stuff = models.BooleanField(default=False)
-    is_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'   #login with email
     REQUIRED_FIELDS = ['username']
