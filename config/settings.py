@@ -11,12 +11,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-import mongoengine
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+BASE_URL = ''
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -40,9 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     "corsheaders",
-    'users',
     'drf_yasg',
     'django_pdb',
+    'users',
+    'products',
+    'category',
+    'subcategory',
 ]
 
 MIDDLEWARE = [
@@ -76,10 +78,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# mongoengine.connect(db="shopping", host="localhost")
 
 DATABASES = {
     'default': {
@@ -149,3 +148,4 @@ PASSWORD_HASHERS = [
 #         'rest_framework.permissions.IsAdminUser'
 #    ],
 # }
+

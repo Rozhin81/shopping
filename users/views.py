@@ -14,7 +14,7 @@ from django.utils.encoding import force_bytes , force_str  , DjangoUnicodeDecode
 from django.urls import reverse
 from django.template.loader import render_to_string
 from .utils import Utils
-from rest_framework.permissions import IsAuthenticated
+# from rest_framework.permissions import IsAuthenticated
 
 
 class EmailVerify:
@@ -54,18 +54,23 @@ class EmailVerify:
 class RegisterView(APIView):
 
     def post(self , request):
-        serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+        try :
+            serializer = UserSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+        except:
+            return Response({
+                'status_code' : 409 ,
+                'message' : "there is an account with this email",
+                'data' : {}
+            })
 
 
 
 #Login Part
 class LoginView(APIView):
     def post(self,request) :
-
-        permission_classes = [IsAuthenticated]
 
         email = request.data['email']
         password = request.data["password"]
