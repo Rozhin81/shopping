@@ -1,5 +1,4 @@
-from djongo import models
-from djongo.models import UniqueConstraint
+from django.db import models
 from django.contrib.auth.models import AbstractUser , BaseUserManager ,PermissionsMixin
 # Create your models here.
 
@@ -20,8 +19,5 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
     
-    class Meta:
-        db_table="users"
-        constraints = [
-            UniqueConstraint(fields = ['email' , 'phone'] , name = "unique")
-        ]
+    # class Meta:
+    #     db_table="users"

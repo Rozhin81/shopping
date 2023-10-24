@@ -1,4 +1,4 @@
-from djongo import models
+from django.db import models
 
 # Create your models here.
 class Seller(models.Model) :
@@ -13,7 +13,7 @@ class Seller(models.Model) :
     REQUIRED_FIELDS = ['phone' , 'password' , 'email' , 'identifier_code']
 
     def __str__(self) -> str:
-        self.email
+        return self.email
     
-    class Meta :
-        db_table = "seller"
+    # class Meta :
+    #     db_table = "seller"

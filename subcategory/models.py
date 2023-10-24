@@ -1,4 +1,4 @@
-from djongo import models
+from django.db import models
 from category.models import Category
 # Create your models here.
 
@@ -9,7 +9,7 @@ class SubCategory(models.Model) :
     REQUIRED_FIELDS = ['title']
     
     def __str__(self) -> str:
-        self.title
+        return self.title
 
-    class Meta :
-        db_table = "subcategory"
+    # class Meta :
+    #     db_table = "subcategory"

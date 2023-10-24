@@ -1,4 +1,4 @@
-from djongo import models
+from django.db import models
 
 # Create your models here.
 
@@ -8,9 +8,9 @@ class Category(models.Model) :
     REQUIERED_FIELDS = ['title']
 
     def __str__(self) -> str:
-        self.title
+        return self.title
     
-    class Meta :
-        db_table = 'category'
+    # class Meta :
+    #     db_table = 'category'
 
     

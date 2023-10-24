@@ -1,24 +1,27 @@
-from djongo import models
-from users.models import User
+from django.db import models
+from seller.models import Seller
 from django.conf import settings
-from djongo.storage import GridFSStorage
 from category.models import Category
 from subcategory.models import SubCategory
 
 
-grid_fs_storage = GridFSStorage(collection='myfiles' , base_url=''.join([settings.BASE_URL , 'myfiles/']) )
+# grid_fs_storage = GridFSStorage(collection='myfiles' , base_url=''.join([settings.BASE_URL , 'myfiles/']) )
 
 class Product(models.Model) :
     category = models.ForeignKey(Category , null=False , blank=False , on_delete=models.CASCADE)
     subcategory = models.ForeignKey(SubCategory , null=False , blank=False , on_delete=models.CASCADE)           
     name = models.CharField(max_length=50)
-    user_id = models.ManyToManyField(User)
+    seller_id = models.ManyToManyField(Seller)
     maker = models.CharField(max_length=50)
     built_in = models.CharField(max_length=30)
-    description = models.CharField(max_length=250)
-    image = models.ImageField(upload_to='products' , storage=grid_fs_storage) 
+    description = models.TextField()
+    # image = models.ImageField(upload_to='products' , storage=grid_fs_storage) 
+    stars = models.IntegerField()
     
     REQUIRED_FIELDS = ['maker' , 'name','built_in' ,'image']
 
-    class Meta :
-        db_table = "products"
+    def __str__(self) -> str:
+        return self.name
+
+    # class Meta :
+    #     db_table = "products"
