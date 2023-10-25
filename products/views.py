@@ -8,37 +8,54 @@ from .serializers import ProductSerializer
 # Create your views here.
 
 class ProductView(APIView):
-    #read a specific product according id
-    def get(self , request) :
-        try : 
-            specific_product = Product.objects.filter(id =request.GET.get('id' , '')).first()
-            return Response({
-                'status_code' : 200 ,
-                'message' : "product found",
-                'data' : {'name' : specific_product.name , 'image':specific_product.image , "category" : specific_product.category , "subcategory" : specific_product.subcategory}
-            })
-        except : 
-            return Response({
-                'status_code' : 404 ,
-                'message' : "product not found",
-                'data' : {}
-            })
-    
+    #create new product
     def post(self , request):
+        # try :
+            serializer = ProductSerializer(data = request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else :
+                return Response( "data is not valid")
+        # except :
+        #     return Response("isn't valid")
+    
+    #get all created products 
+    def get(self , request):
+        products = Product.objects.all()
+        serializer = ProductSerializer(products , many=True)
+        return Response(serializer.data)
+    
+
+
+
+class ProductViewByPk(APIView) :
+
+    #read a specific product according id
+    def get(self , request , pk):   #not work for pk argument
+        try : 
+            specific_product = Product.objects.filter(id=pk).first()
+            serializer= ProductSerializer(specific_product , many=False)
+            return Response(serializer.data)
+        except : 
+            return Response("product not found")
+        
+    #update products information
+    def put(self , request , pk): 
         try :
-            # findProduct = ProductSell.objects.filter(name=request.data['name'] , user_id=request.headers).first()            
-            findProduct = ProductSell.objects.filter(name=request.data['name'] ).first()
-            if findProduct==None :   
-                print(request.data)
-                Product.objects.create(request.data)
-                return Response({
-                    'status_code' : 200 ,
-                    "message" : "successfully created",
-                    'data' : {}
-                })
+            product = Product.objects.filter(id=pk).first()
+            print(product)
+            serializer = ProductSerializer(instance=product , data=request.data)
+            if serializer.is_valid() :
+                serializer.save()
+            return Response(serializer.data)
+            # else :
+            #     return Response("Something Went wrong")
         except :
-            return Response({
-                'status_code' : 200 ,
-                "message" : "successfully created",
-                'data' : {}
-            })
+            print("error")
+    
+    #delete product
+    def delete(self , request , pk):
+        product = Product.objects.filter(id=pk).first()
+        product.delete()
+        return Response("Product successfully deleted!")

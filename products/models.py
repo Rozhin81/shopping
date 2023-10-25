@@ -8,10 +8,10 @@ from subcategory.models import SubCategory
 # grid_fs_storage = GridFSStorage(collection='myfiles' , base_url=''.join([settings.BASE_URL , 'myfiles/']) )
 
 class Product(models.Model) :
-    category = models.ForeignKey(Category , null=False , blank=False , on_delete=models.CASCADE)
-    subcategory = models.ForeignKey(SubCategory , null=False , blank=False , on_delete=models.CASCADE)           
+    category = models.ForeignKey(Category , null=True , blank=True , on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(SubCategory , null=True , blank=True , on_delete=models.CASCADE)           
     name = models.CharField(max_length=50)
-    seller_id = models.ManyToManyField(Seller)
+    seller_id = models.ManyToManyField(Seller, null=True , blank=True)
     maker = models.CharField(max_length=50)
     built_in = models.CharField(max_length=30)
     description = models.TextField()
