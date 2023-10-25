@@ -44,13 +44,12 @@ class ProductViewByPk(APIView) :
     def put(self , request , pk): 
         try :
             product = Product.objects.filter(id=pk).first()
-            print(product)
             serializer = ProductSerializer(instance=product , data=request.data)
             if serializer.is_valid() :
                 serializer.save()
-            return Response(serializer.data)
-            # else :
-            #     return Response("Something Went wrong")
+                return Response(serializer.data)
+            else :
+                return Response("Something Went wrong")
         except :
             print("error")
     

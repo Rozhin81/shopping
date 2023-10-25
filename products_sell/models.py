@@ -15,6 +15,3 @@ class ProductSell(models.Model) :
 
     def __str__(self) -> str:
         return self.name
-
-    # class Meta :
-    #     db_table = 'products_sell'

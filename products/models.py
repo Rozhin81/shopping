@@ -1,15 +1,15 @@
 from django.db import models
 from seller.models import Seller
-from django.conf import settings
 from category.models import Category
 from subcategory.models import SubCategory
+from orders.models import Order
 
 
 # grid_fs_storage = GridFSStorage(collection='myfiles' , base_url=''.join([settings.BASE_URL , 'myfiles/']) )
 
 class Product(models.Model) :
     category = models.ForeignKey(Category , null=True , blank=True , on_delete=models.CASCADE)
-    subcategory = models.ForeignKey(SubCategory , null=True , blank=True , on_delete=models.CASCADE)           
+    subcategory = models.ForeignKey(SubCategory , null=True , blank=True , on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     seller_id = models.ManyToManyField(Seller, null=True , blank=True)
     maker = models.CharField(max_length=50)
@@ -22,6 +22,3 @@ class Product(models.Model) :
 
     def __str__(self) -> str:
         return self.name
-
-    # class Meta :
-    #     db_table = "products"
