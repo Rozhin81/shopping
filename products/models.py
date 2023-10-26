@@ -2,7 +2,6 @@ from django.db import models
 from seller.models import Seller
 from category.models import Category
 from subcategory.models import SubCategory
-from orders.models import Order
 
 
 # grid_fs_storage = GridFSStorage(collection='myfiles' , base_url=''.join([settings.BASE_URL , 'myfiles/']) )

@@ -1,10 +1,10 @@
 from django.contrib.sites.shortcuts import get_current_site
 from rest_framework.views import APIView 
-from .serializers import UserSerializer , ResetPasswordSerializer
+from .serializers import CustomerSerializer , ResetPasswordSerializer
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.exceptions import AuthenticationFailed
-from .models import User
+from .models import Customer
 import jwt , datetime
 from rest_framework import generics , status , viewsets
 from . import serializers
@@ -18,33 +18,33 @@ from .utils import Utils
 
 
 class EmailVerify:
-    def send_action_email(user , request):
+    def send_action_email(customer , request):
         payload ={
-            'id' : user.id,
-            'email' : user.email,
+            'id' : customer.id,
+            'email' : customer.email,
             "exp" : datetime.datetime.utcnow() + datetime.timedelta(minutes=15),
             "iat" : datetime.datetime.utcnow()
         }
         current_site = get_current_site(request)
         email_subject = "Activate your account"
         email_body = render_to_string("users/activate.html" , {
-            "user" : user,
+            "user" : customer,
             "domain" : current_site,
-            'uid': urlsafe_b64encode(force_bytes(user.id)),
+            'uid': urlsafe_b64encode(force_bytes(customer.id)),
             'token' : jwt.encode(payload , 'secret')
         })
-        Utils.send_email({"email_subject" : email_subject , "email_body" :email_body , "to_email" : user.email})
+        Utils.send_email({"email_subject" : email_subject , "email_body" :email_body , "to_email" : customer.email})
     
     def active_user(request , uidb64 , token) :
         try :
             uid = force_str(urlsafe_base64_decode(uidb64))
-            user= User.objects.get(id=uid)
+            customer= Customer.objects.get(id=uid)
         except Exception as e :
-            user=None
-        if user and jwt.decode(token) :
-            user.email_verified= True
-            user.save()
-            EmailVerify.send_action_email(user , request)
+            customer=None
+        if customer and jwt.decode(token) :
+            customer.email_verified= True
+            customer.save()
+            EmailVerify.send_action_email(customer , request)
             return Response({
                 "message" : "Verified your email",
                 "status" : status.HTTP_200_OK
@@ -55,7 +55,7 @@ class RegisterView(APIView):
 
     def post(self , request):
         try :
-            serializer = UserSerializer(data=request.data)
+            serializer = CustomerSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
@@ -75,18 +75,18 @@ class LoginView(APIView):
         email = request.data['email']
         password = request.data["password"]
 
-        user=User.objects.filter(email=email).first()
-        if user is None :
+        customer = Customer.objects.filter(email=email).first()
+        if customer is None :
             raise AuthenticationFailed("User not found")
 
-        if not user.check_password(password) :
+        if not customer.check_password(password) :
             raise AuthenticationFailed("Incorrect password")
         
-        if not user.email_verified :
+        if not customer.email_verified :
             raise AuthenticationFailed("Please , first verify your Email")
 
         payload = {
-            "id" : user.id 
+            "id" : customer.id 
         }
         token = jwt.encode(payload , "secret")
         
@@ -101,7 +101,7 @@ class LoginView(APIView):
         return response
 
 
-class UserView(APIView) :
+class CustomerView(APIView) :
     def get(self , request) :
         token = request.COOKIES.get("jwt")
 
@@ -112,8 +112,8 @@ class UserView(APIView) :
         except jwt.ExpiredSignatureError: 
             raise AuthenticationFailed("Unauthenticated")
         
-        user = User.objects.filter(id=payload["id"]).first()
-        serializer = UserSerializer(user)
+        customer = Customer.objects.filter(id=payload["id"]).first()
+        serializer = CustomerSerializer(customer)
 
         return Response(serializer.data)
     
@@ -139,12 +139,12 @@ class PasswordReset(generics.GenericAPIView) :
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         email = serializer.data['email']
-        user = User.objects.filter(email=email).first()
-        if user :
-            encoded_pk = urlsafe_b64encode(force_bytes(user.id))
+        customer = Customer.objects.filter(email=email).first()
+        if customer :
+            encoded_pk = urlsafe_b64encode(force_bytes(customer.id))
             payload ={
-                'id' : user.id,
-                'email' : user.email,
+                'id' : customer.id,
+                'email' : customer.email,
                 "exp" : datetime.datetime.utcnow() + datetime.timedelta(minutes=15),
                 "iat" : datetime.datetime.utcnow()
             }

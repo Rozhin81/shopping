@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import Customer
 from django.utils.encoding import smart_str,force_str , smart_bytes , DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode
 import jwt , datetime
@@ -9,9 +9,9 @@ from .utils import Utils
 
 
 
-class UserSerializer(serializers.ModelSerializer) :
+class CustomerSerializer(serializers.ModelSerializer) :
     class Meta:
-        model = User
+        model = Customer
         fields = ["name" , "email" , "phone", "password"]
         extra_kwargs={
             "password":{"write_only" : True}
@@ -65,12 +65,12 @@ class ResetPasswordSerializer(serializers.Serializer):
         encoded_pk = self.context.get("kwargs").get("encoded_pk")
         if token is None or encoded_pk is None :
             raise serializers.ValidationError("Missing Data")
-        user_email = urlsafe_base64_decode(encoded_pk).decode()
-        user = User.objects.get(email=user_email)
+        customer_email = urlsafe_base64_decode(encoded_pk).decode()
+        customer = Customer.objects.get(email=customer_email)
         if not jwt.decode(token, "secret", algorithms=['HS256']) :
             raise serializers.ValidationError("token is invalid")
-        user.set_password(password)
-        user.save()
+        customer.set_password(password)
+        customer.save()
         return data
 
 

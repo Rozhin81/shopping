@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django_pdb',
     'rest_framework_simplejwt',
-    'users',
+    'customer',
     'products',
     'category',
     'subcategory',
@@ -142,7 +142,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'customer.Customer'
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
