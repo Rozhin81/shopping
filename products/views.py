@@ -4,21 +4,27 @@ from .models import Product
 from products_sell.models import ProductSell
 from rest_framework.response import Response
 from .serializers import ProductSerializer
+from django.utils.decorators import decorator_from_middleware
+from customer.custom_middleware import CustomMiddleware
+from django.utils.decorators import method_decorator
 
-# Create your views here.
+middleware = decorator_from_middleware(CustomMiddleware)
+
 
 class ProductView(APIView):
+
+    @method_decorator(CustomMiddleware)
     #create new product
     def post(self , request):
-        # try :
+        try :
             serializer = ProductSerializer(data = request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
             else :
                 return Response( "data is not valid")
-        # except :
-        #     return Response("isn't valid")
+        except :
+            return Response("isn't valid")
     
     #get all created products 
     def get(self , request):

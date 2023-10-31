@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'subcategory',
     'seller',
     'products_sell',
+    'orders',
+    'shopping_basket'
 ]
 
 MIDDLEWARE = [
@@ -151,7 +153,7 @@ PASSWORD_HASHERS = [
 ]
 
 REST_FRAMEWORK = {
-#     'EXCEPTION_HANDLER': 'utils.exceptionhandler.custom_exception_handler' ,
+    'EXCEPTION_HANDLER': 'utils.exceptionhandler.custom_exception_handler' ,
    'DEFAULT_AUTHENTICATION_CLASSES': [
        'rest_framework_simplejwt.authentication.JWTAuthentication',
    ],

@@ -1,8 +1,9 @@
 from django.db import models
-from products.models import Product
+from customer.models import Customer
+
+from datetime import datetime
 
 
 class Order(models.Model) :
-    prod_id = models.ForeignKey(Product , null=False , blank=False)
-    date = models.DateTimeField()
-    
+    customer_id = models.ForeignKey(Customer , null=False , blank=False , on_delete=models.CASCADE)
+    date = models.DateTimeField(default=datetime.now , blank=True)
