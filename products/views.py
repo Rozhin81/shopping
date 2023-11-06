@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .models import Product
+from .models import Product , ProductChart
 from products_sell.models import ProductSell
 from rest_framework.response import Response
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer , ChartSerializer
 from django.utils.decorators import decorator_from_middleware
 from customer.custom_middleware import CustomMiddleware
 from django.utils.decorators import method_decorator
 
-middleware = decorator_from_middleware(CustomMiddleware)
+# middleware = decorator_from_middleware(CustomMiddleware)
 
 
 class ProductView(APIView):
@@ -17,13 +17,15 @@ class ProductView(APIView):
     #create new product
     def post(self , request):
         try :
+            print(request.data)
             serializer = ProductSerializer(data = request.data)
-            if serializer.is_valid():
+            if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(serializer.data)
             else :
                 return Response( "data is not valid")
-        except :
+        except Exception as e:
+            print(e)
             return Response("isn't valid")
     
     #get all created products 
@@ -38,7 +40,7 @@ class ProductView(APIView):
 class ProductViewByPk(APIView) :
 
     #read a specific product according id
-    def get(self , request , pk):   #not work for pk argument
+    def get(self , request , pk):  
         try : 
             specific_product = Product.objects.filter(id=pk).first()
             serializer= ProductSerializer(specific_product , many=False)
@@ -64,3 +66,14 @@ class ProductViewByPk(APIView) :
         product = Product.objects.filter(id=pk).first()
         product.delete()
         return Response("Product successfully deleted!")
+
+
+
+
+class ChartViewByPk(APIView) :
+    def get(self , request , pk) :
+        each_prod_chart = ProductChart.objects.filter(prod_id = pk)
+        serializer = ChartSerializer(each_prod_chart , many=True)
+        data = serializer.data
+        return Response(data)
+

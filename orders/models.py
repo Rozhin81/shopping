@@ -1,7 +1,6 @@
 from django.db import models
-from customer.models import Customer
-
 from datetime import datetime
+from customer.models import Customer
 
 
 class Order(models.Model) :

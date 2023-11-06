@@ -34,14 +34,13 @@ class CustomMiddleware(MiddlewareMixin) :
     """
     Custom Middleware Class to process a request before it reached the endpoint
     """
-    def __init__(self   ,*args,**kwargs) :
-        # self.get_response = get_response
-        # self.authorization = authorization
-        pass
+    def __init__(self ,function ) :
+        self.function = function
 
-    def __call__(self , request) :
+    def __call__(self ,  *args,**kwargs) :
         # response = request.META.get('Authorization')
-        return "response"
+        self.function(*args,**kwargs)
+        # return "response"
 
     def process_request(self , request) :
         """

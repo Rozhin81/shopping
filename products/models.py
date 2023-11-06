@@ -3,8 +3,11 @@ from seller.models import Seller
 from category.models import Category
 from subcategory.models import SubCategory
 from orders.models import Order
+from datetime import datetime
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+# from django.utils import timezone
 
-# grid_fs_storage = GridFSStorage(collection='myfiles' , base_url=''.join([settings.BASE_URL , 'myfiles/']) )
 
 class Product(models.Model) :
     category = models.ForeignKey(Category , null=True , blank=True , on_delete=models.CASCADE)
@@ -23,3 +26,22 @@ class Product(models.Model) :
 
     def __str__(self) -> str:
         return self.name
+    
+
+@receiver(post_save , sender=Product)
+def create_chart(sender , instance , created , **kwargs) :
+        obj = ProductChart(price=instance.price,date=datetime.now(),prod_id=instance)
+        obj.save()
+
+# @receiver(post_save , sender=Product)
+# def save_chart(sender , instance , **kwargs) :
+#     instance.ProductChart.save()
+
+class ProductChart(models.Model) :
+    prod_id=models.ForeignKey(Product ,  on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=10 , decimal_places=2)
+    date =  models.DateField()
+    def __str__(self):
+        return self.prod_id
+    
+
